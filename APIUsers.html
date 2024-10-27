@@ -1,0 +1,57 @@
+# Standalone version of the other 2 html, I made this first and then made the other 2 to test the ability of html shared storage on this project.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emulated API in HTML (PoC)</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #output { margin-top: 20px; }
+        input { margin-right: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Emulated API in the Browser PoC</h1>
+
+    <input type="text" id="userNameInput" placeholder="Enter user name">
+    <button id="addUserBtn">Add User</button>
+    <button id="getUsersBtn">Get Users</button>
+
+    <div id="output"></div>
+
+    <script>
+        if (!localStorage.getItem('users')) {
+            localStorage.setItem('users', JSON.stringify([]));
+        }
+
+        // Function to get users from localStorage
+        function getUsers() {
+            return JSON.parse(localStorage.getItem('users'));
+        }
+
+        function addUser(name) {
+            const users = getUsers();
+            const newUser = { id: users.length + 1, name: name };
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            return newUser;
+        }
+
+        document.getElementById('addUserBtn').addEventListener('click', () => {
+            const userName = document.getElementById('userNameInput').value;
+            if (userName) {
+                const newUser = addUser(userName);
+                document.getElementById('output').textContent = `Added User: ${JSON.stringify(newUser)}`;
+            } else {
+                document.getElementById('output').textContent = 'Please enter a user name.';
+            }
+        });
+
+        document.getElementById('getUsersBtn').addEventListener('click', () => {
+            const users = getUsers();
+            document.getElementById('output').textContent = users.length ? JSON.stringify(users) : 'No users found.';
+        });
+    </script>
+</body>
+</html>
